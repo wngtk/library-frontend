@@ -6,6 +6,7 @@ query AllAuthors {
     name
     born
     bookCount
+    id
   }
 }
 `
@@ -16,6 +17,7 @@ query AllBooks {
     title
     author
     published
+    id
   }
 }
 `
@@ -27,6 +29,7 @@ mutation addBook($title: String!, $author: String!, $published: Int!, $genres: [
     published
     author
     genres
+    id
   }
 }
 `
@@ -36,6 +39,7 @@ mutation ($name: String!, $setBornTo: Int!) {
   editAuthor(name: $name, setBornTo: $setBornTo) {
     name
     born
+    id
   }
 }
 `

@@ -1,15 +1,13 @@
 import { useMutation } from "@apollo/client"
 import { useEffect, useState } from "react"
-import { ALL_AUTHORS, EDIT_AUTHOR } from "../queries"
+import { EDIT_AUTHOR } from "../queries"
 
 import Select from 'react-select';
 
 const EditAuthor = ({ authors }) => {
   const [name, setName] = useState(null)
   const [born, setBorn] = useState('')
-  const [ editAuthor, result ] = useMutation(EDIT_AUTHOR, {
-    refetchQueries: [ { query: ALL_AUTHORS } ]
-  })
+  const [ editAuthor, result ] = useMutation(EDIT_AUTHOR)
 
   useEffect(() => {
     if (result.data?.editAuthor === null) {
