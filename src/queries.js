@@ -56,3 +56,13 @@ mutation($username: String!, $password: String!) {
   }
 }
 `
+
+export const ME = gql`
+query Me {
+  me {
+    username
+    favoriteGenre
+    id
+  }
+}
+`
