@@ -3,8 +3,8 @@ import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
-import { useApolloClient, useQuery } from "@apollo/client";
-import { ALL_BOOKS } from "./queries";
+import { useApolloClient, useQuery, useSubscription } from "@apollo/client";
+import { ALL_BOOKS, BOOK_ADDED } from "./queries";
 import Recommand from "./components/Recommand";
 
 const App = () => {
@@ -12,6 +12,19 @@ const App = () => {
   const [token, setToken] = useState(null)
   const allBooksQuery = useQuery(ALL_BOOKS)
   const client = useApolloClient()
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client}) => {
+      const addedBook = data.data.bookAdded
+
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(addedBook)
+        }
+      })
+      // console.log(addedBook)
+    }
+  })
 
   useEffect(() => {
     if (token) {

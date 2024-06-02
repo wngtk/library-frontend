@@ -80,3 +80,17 @@ query Me {
   }
 }
 `
+
+export const BOOK_ADDED = gql`
+subscription bookAdded {
+  bookAdded {
+    title
+    published
+    author {
+      name
+    }
+    genres
+    id
+  }
+}
+`
