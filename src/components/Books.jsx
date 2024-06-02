@@ -23,6 +23,12 @@ const Books = (props) => {
   })
   const genres = useGenres()
 
+  useEffect(() => {
+    if (!result.loading) {
+      result.refetch()
+    }
+  }, [filter])
+
   if (!props.show || result.loading) {
     return null
   }
