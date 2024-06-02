@@ -19,6 +19,7 @@ query AllBooks {
       name
     }
     published
+    genres
     id
   }
 }
