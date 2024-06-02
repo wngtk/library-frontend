@@ -4,12 +4,13 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import { useApolloClient, useQuery } from "@apollo/client";
-import { ME } from "./queries";
+import { ALL_BOOKS } from "./queries";
 import Recommand from "./components/Recommand";
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null)
+  const allBooksQuery = useQuery(ALL_BOOKS)
   const client = useApolloClient()
 
   useEffect(() => {
@@ -47,13 +48,13 @@ const App = () => {
 
       <Authors show={page === "authors"} />
 
-      <Books show={page === "books"} />
+      <Books show={page === "books"} books={allBooksQuery.data?.allBooks} refetchAllBooks={() => allBooksQuery.refetch()} />
 
       <NewBook show={page === "add"} />
 
       <LoginForm show={page === "login"} setToken={setToken} />
 
-      <Recommand show={page === "recommand"} />
+      <Recommand show={page === "recommand"} books={allBooksQuery.data?.allBooks} />
     </div>
   );
 };

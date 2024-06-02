@@ -1,20 +1,18 @@
 import { useQuery } from "@apollo/client"
-import { ALL_BOOKS, ME } from "../queries"
+import { ME } from "../queries"
 
 const Recommand = (props) => {
-  const result = useQuery(ALL_BOOKS)
   const queryMe = useQuery(ME, {
     onError: (error) => {
       console.error(error.graphQLErrors[0].message)
     }
   })
 
-  if (result.loading || !props.show || queryMe.loading)
+  if (!props.show || queryMe.loading || !props.books)
     return null
 
+  const books = props.books
   const favoriteGenre = queryMe.data.me.favoriteGenre
-
-  const books = result.data.allBooks
   const booksToShow = books.filter(b => b.genres.includes(favoriteGenre))
 
   return (
