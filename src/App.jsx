@@ -4,20 +4,37 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import { useApolloClient, useQuery, useSubscription } from "@apollo/client";
-import { ALL_BOOKS, BOOK_ADDED } from "./queries";
+import { ALL_BOOKS, BOOK_ADDED, FIND_BOOKS } from "./queries";
 import Recommand from "./components/Recommand";
+
+const useGenres = (books) => {
+  const [genres, setGenres] = useState([])
+
+  useEffect(() => {
+    if (books) {
+      setGenres([...new Set(books.map(b => b.genres).flat())])
+    }
+  }, [books])
+
+  return genres
+}
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null)
   const allBooksQuery = useQuery(ALL_BOOKS)
   const client = useApolloClient()
+  const [filter, setFilter] = useState(null)
+  const findBooksQuery = useQuery(FIND_BOOKS, {
+    variables: { genre: filter }
+  })
+  const genres = useGenres(allBooksQuery.data?.allBooks)
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data, client}) => {
       const addedBook = data.data.bookAdded
 
-      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+      client.cache.updateQuery({ query: FIND_BOOKS, variables: { genre: null } }, ({ allBooks }) => {
         return {
           allBooks: allBooks.concat(addedBook)
         }
@@ -61,7 +78,14 @@ const App = () => {
 
       <Authors show={page === "authors"} />
 
-      <Books show={page === "books"} books={allBooksQuery.data?.allBooks} refetchAllBooks={() => allBooksQuery.refetch()} />
+      <Books show={page === "books"}
+        genres={genres}
+        refetchAllBooks={() => allBooksQuery.refetch()}
+        filter={filter}
+        setFilter={setFilter}
+        loading={findBooksQuery.loading}
+        books={findBooksQuery.data?.allBooks}
+      />
 
       <NewBook show={page === "add"} />
 

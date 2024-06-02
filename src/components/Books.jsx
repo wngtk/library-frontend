@@ -1,39 +1,13 @@
-import { useQuery } from "@apollo/client"
-import { FIND_BOOKS } from "../queries"
-import { useEffect, useState } from "react"
-
-const useGenres = (books) => {
-  const [genres, setGenres] = useState([])
-
-  useEffect(() => {
-    if (books) {
-      setGenres([...new Set(books.map(b => b.genres).flat())])
-    }
-  }, [books])
-
-  return genres
-}
-
 const Books = (props) => {
-  const [filter, setFilter] = useState(null)
-  const genres = useGenres(props.books)
-  const result = useQuery(FIND_BOOKS, {
-    variables: { genre: filter }
-  })
+  const filter = props.filter
+  const setFilter = props.setFilter
+  const genres = props.genres
 
-  // When new genre selection is not done, the view does not have to be updated.
-  useEffect(() => {
-    if (!result.loading) {
-      result.refetch()
-      props.refetchAllBooks()
-    }
-  }, [filter])
-
-  if (!props.show || result.loading) {
+  if (!props.show || props.loading) {
     return null
   }
 
-  const books = result.data.allBooks
+  const books = props.books
 
   return (
     <div>
